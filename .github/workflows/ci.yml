@@ -13,7 +13,7 @@ jobs:
         # after the test run completes store videos and any screenshots
         # on the GitHub Action artifacts
         with:
-          record: true
+
           video: true
       - uses: actions/upload-artifact@v4
         # add the line below to store screenshots only on failures
