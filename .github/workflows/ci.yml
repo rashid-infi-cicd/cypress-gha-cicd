@@ -18,7 +18,7 @@ jobs:
       # Install npm dependencies, cache them correctly
       # and run all Cypress tests
       - name: Cypress run
-        continue-on-error: false
+        # continue-on-error: false
         uses: cypress-io/github-action@v6
         
       # Store screenshots only on failures
