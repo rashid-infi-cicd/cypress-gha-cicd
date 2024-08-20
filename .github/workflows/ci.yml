@@ -21,21 +21,21 @@ jobs:
         continue-on-error: true
         uses: cypress-io/github-action@v6
         
-      # Store screenshots only on failures
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-          if-no-files-found: ignore
+      # # Store screenshots only on failures
+      # - uses: actions/upload-artifact@v4
+      #   if: failure()
+      #   with:
+      #     name: cypress-screenshots
+      #     path: cypress/screenshots
+      #     if-no-files-found: ignore
 
-      # Store videos always, even if tests pass
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: cypress-videos
-          path: cypress/videos
-          if-no-files-found: ignore
+      # # Store videos always, even if tests pass
+      # - uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #     name: cypress-videos
+      #     path: cypress/videos
+      #     if-no-files-found: ignore
 
   create-issue-on-failure:
     runs-on: ubuntu-22.04
