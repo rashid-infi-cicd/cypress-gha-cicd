@@ -1,4 +1,5 @@
 name: End-to-end tests
+
 on: 
   push:
     branches:
@@ -13,44 +14,49 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        
       # Install npm dependencies, cache them correctly
       # and run all Cypress tests
       - name: Cypress run
         continue-on-error: true
         uses: cypress-io/github-action@v6
-        # after the test run completes store videos and any screenshots
-        # on the GitHub Action artifacts
+        
+      # Store screenshots only on failures
       - uses: actions/upload-artifact@v4
-        # add the line below to store screenshots only on failures
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
-          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+          if-no-files-found: ignore
+
+      # Store videos always, even if tests pass
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cypress-videos
           path: cypress/videos
-          if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
+          if-no-files-found: ignore
 
-      - name: Create GitHub Issue on Failure
-        if: failure()
-        uses: actions/github-script@v3
+  create-issue-on-failure:
+    runs-on: ubuntu-22.04
+    needs: cypress-run
+    if: failure()
+    steps:
+      - name: Create GitHub Issue
+        uses: actions/github-script@v6
         with:
-            script: |
-              const { context, github } = require('@actions/github');
-              const issueTitle = `CI Pipeline Failed: ${context.workflow} ${context.job}`;
-              const issueBody = `The CI pipeline failed in the following step: ${context.payload.head_commit.message}`;
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: issueTitle,
-                body: issueBody,
-                labels: ['bug', 'CI'],
-              });
-  
-
+          script: |
+            const title = 'Cypress Test Suite Failure in CI Pipeline';
+            const body = `The Cypress test suite in the CI pipeline has failed. 
+                          Please investigate the issue.
+                          \n\nSee the [workflow run](${github.context.run_url}) for more details.`;
+            github.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['bug', 'CI-failure'],
+            });
 
 
 
@@ -58,24 +64,24 @@ jobs:
 
           
 
-      - name: Encode Screenshots
-        run: |
-          for file in $(find cypress/screenshots -type f); do
-            echo -n '{"text": "' >> payload.json
-            echo $(base64 $file) >> payload.json
-            echo '"},' >> payload.json
-          done
+      # - name: Encode Screenshots
+      #   run: |
+      #     for file in $(find cypress/screenshots -type f); do
+      #       echo -n '{"text": "' >> payload.json
+      #       echo $(base64 $file) >> payload.json
+      #       echo '"},' >> payload.json
+      #     done
   
-      - name: Encode Videos
-        run: |
-          for file in $(find cypress/videos -type f); do
-            echo -n '{"text": "' >> payload.json
-            echo $(base64 $file) >> payload.json
-            echo '"},' >> payload.json
-          done
+      # - name: Encode Videos
+      #   run: |
+      #     for file in $(find cypress/videos -type f); do
+      #       echo -n '{"text": "' >> payload.json
+      #       echo $(base64 $file) >> payload.json
+      #       echo '"},' >> payload.json
+      #     done
 
-      - name: Clean Up Payload
-        run: rm -f payload.json
+      # - name: Clean Up Payload
+      #   run: rm -f payload.json
 
 
 
