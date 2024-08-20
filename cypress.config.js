@@ -11,5 +11,6 @@ module.exports = defineConfig({
     screenshotsFolder: 'cypress/screenshots',
     videosFolder: 'cypress/videos',
     trashAssetsBeforeRuns: false,
+    screenshotOnRunFailure: true,
   },
 });
