@@ -47,7 +47,6 @@ jobs:
         if: failure()
         with:
           script: |
-            const github = require('@actions/github');
             const title = 'Cypress Test Suite Failure in CI Pipeline';
             const body = `The Cypress test suite in the CI pipeline has failed. 
                           Please investigate the issue.
