@@ -32,42 +32,41 @@ jobs:
           name: cypress-videos
           path: cypress/videos
           if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
-      - name: Notify Microsoft Teams
-        if: always()
-        run: |
-          STATUS="Success"
-          if [ "${{ job.status }}" != "success" ]; then
-            STATUS="Failure"
-          fi
-          
-          curl -H 'Content-Type: application/json' \
-               -d '{
-                     "text": "Cypress test run for `main` branch has completed.",
-                     "themeColor": "0076D7",
-                     "title": "Cypress Test Results: '"${STATUS}"'",
-                     "sections": [
-                       {
-                         "activityTitle": "Test Status: '"${STATUS}"'",
-                         "activitySubtitle": "Repository: ${{ github.repository }}",
-                         "activityImage": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-                         "facts": [
-                           {
-                             "name": "Branch",
-                             "value": "${{ github.ref }}"
-                           },
-                           {
-                             "name": "Commit",
-                             "value": "${{ github.sha }}"
-                           },
-                           {
-                             "name": "Workflow",
-                             "value": "${{ github.workflow }}"
-                           }
-                         ],
-                         "markdown": true
-                       }
-                     ]
-                   }' \
-               ${TEAMS_WEBHOOK_URL}
-        env:
-          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+      # - name: Notify Microsoft Teams
+      #   if: always()
+      #   run: |
+      #     STATUS="Success"
+      #     if [ "${{ job.status }}" != "success" ]; then
+      #       STATUS="Failure"
+      #     fi
+      #     curl -H 'Content-Type: application/json' \
+      #          -d '{
+      #                "text": "Cypress test run for `main` branch has completed.",
+      #                "themeColor": "0076D7",
+      #                "title": "Cypress Test Results: '"${STATUS}"'",
+      #                "sections": [
+      #                  {
+      #                    "activityTitle": "Test Status: '"${STATUS}"'",
+      #                    "activitySubtitle": "Repository: ${{ github.repository }}",
+      #                    "activityImage": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+      #                    "facts": [
+      #                      {
+      #                        "name": "Branch",
+      #                        "value": "${{ github.ref }}"
+      #                      },
+      #                      {
+      #                        "name": "Commit",
+      #                        "value": "${{ github.sha }}"
+      #                      },
+      #                      {
+      #                        "name": "Workflow",
+      #                        "value": "${{ github.workflow }}"
+      #                      }
+      #                    ],
+      #                    "markdown": true
+      #                  }
+      #                ]
+      #              }' \
+      #          ${TEAMS_WEBHOOK_URL}
+      #   # env:
+      #     # TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
