@@ -33,6 +33,29 @@ jobs:
           path: cypress/videos
           if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
 
+      - name: Encode Screenshots
+        run: |
+          for file in $(find cypress/screenshots -type f); do
+            echo -n '{"text": "' >> payload.json
+            echo $(base64 $file) >> payload.json
+            echo '"},' >> payload.json
+          done
+  
+      - name: Encode Videos
+        run: |
+          for file in $(find cypress/videos -type f); do
+            echo -n '{"text": "' >> payload.json
+            echo $(base64 $file) >> payload.json
+            echo '"},' >> payload.json
+          done
+
+
+      - name: Clean Up Payload
+        run: rm -f payload.json
+
+
+
+
 
       # - name: Notify Microsoft Teams
       #   if: always()
