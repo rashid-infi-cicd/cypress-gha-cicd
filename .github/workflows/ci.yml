@@ -37,15 +37,17 @@ jobs:
           path: cypress/videos
           if-no-files-found: ignore
 
-  create-issue-on-failure:
-    runs-on: ubuntu-22.04
-    needs: cypress-run
-    if: ${{ needs.cypress-run.result == 'failure' }}
-    steps:
-      - name: Create GitHub Issue
-        uses: actions/github-script@v6
+  # create-issue-on-failure:
+#   runs-on: ubuntu-22.04
+  #   needs: cypress-run
+  #   if: ${{ needs.cypress-run.result == 'failure' }}
+  #   steps:
+  #     - name: Create GitHub Issue
+      - uses: actions/github-script@v6
+        if: failure()
         with:
           script: |
+            echo 'here'
             const title = 'Cypress Test Suite Failure in CI Pipeline';
             const body = `The Cypress test suite in the CI pipeline has failed. 
                           Please investigate the issue.
