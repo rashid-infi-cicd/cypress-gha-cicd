@@ -33,6 +33,30 @@ jobs:
           path: cypress/videos
           if-no-files-found: ignore # 'warn' or 'error' are also available, defaults to `warn`
 
+      - name: Create GitHub Issue on Failure
+        if: failure()
+        uses: actions/github-script@v3
+        with:
+            script: |
+              const { context, github } = require('@actions/github');
+              const issueTitle = `CI Pipeline Failed: ${context.workflow} ${context.job}`;
+              const issueBody = `The CI pipeline failed in the following step: ${context.payload.head_commit.message}`;
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: issueTitle,
+                body: issueBody,
+                labels: ['bug', 'CI'],
+              });
+  
+
+
+
+
+
+
+          
+
       - name: Encode Screenshots
         run: |
           for file in $(find cypress/screenshots -type f); do
