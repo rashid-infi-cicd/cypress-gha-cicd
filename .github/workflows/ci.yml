@@ -1,59 +1,36 @@
-name: End-to-end tests
+name: CI
 
-on: 
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
- 
+on: [push]
+
 jobs:
-  cypress-run:
-    runs-on: ubuntu-22.04
+  test:
+    runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v2
+    
+    - name: Run tests
+      run: |
+        # Run your test suite
+        npm test
         
-      # Install npm dependencies, cache them correctly
-      # and run all Cypress tests
-      - name: Cypress run
-        id: cypress
-        uses: cypress-io/github-action@v6
-        with:
-          start: npm start  # Optional: Start your application if needed
-          wait-on: 'http://localhost:3000'  # Optional: Wait for your app to be ready
-          wait-on-timeout: 60  # Optional: Timeout for waiting on the app
-
-      # Create an issue on test failure
-      - name: Create issue on test failure
-        if: ${{ failure() }}
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const issueTitle = 'Cypress Test Suite Failed';
-            const issueBody = `
-              The Cypress test suite has failed in the latest GitHub Actions run.
-              Please investigate the failure.
-
-              **Commit:** \`${context.payload.head_commit.id}\`
-              **Branch:** \`${context.ref}\`
-              **Run URL:** [View Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
-            `;
-            github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: issueTitle,
-              body: issueBody
-            });
-
-
-
-
-
-
-
+        # Check if tests failed
+        if [ $? -ne 0 ]; then
+          echo "Tests failed" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Create issue on test failure
+      if: ${{ failure() || steps.test.outputs.exitcode == 1 }}
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: 'Test suite failed',
+            body: 'The test suite failed in the latest GitHub Actions run. Please investigate.'
+          })
 
 
 
@@ -81,42 +58,42 @@ jobs:
 #         continue-on-error: true
 #         uses: cypress-io/github-action@v6
         
-      # # Store screenshots only on failures
-      # - uses: actions/upload-artifact@v4
-      #   if: failure()
-      #   with:
-      #     name: cypress-screenshots
-      #     path: cypress/screenshots
-      #     if-no-files-found: ignore
+#       # Store screenshots only on failures
+#       - uses: actions/upload-artifact@v4
+#         if: failure()
+#         with:
+#           name: cypress-screenshots
+#           path: cypress/screenshots
+#           if-no-files-found: ignore
 
-      # # Store videos always, even if tests pass
-      # - uses: actions/upload-artifact@v4
-      #   if: always()
-      #   with:
-      #     name: cypress-videos
-      #     path: cypress/videos
-      #     if-no-files-found: ignore
+#       # Store videos always, even if tests pass
+#       - uses: actions/upload-artifact@v4
+#         if: always()
+#         with:
+#           name: cypress-videos
+#           path: cypress/videos
+#           if-no-files-found: ignore
 
-  # create-issue-on-failure:
-  #   runs-on: ubuntu-22.04
-  #   needs: cypress-run
-  #   if: ${{ needs.cypress-run.result == 'failure' }}
-  #   steps:
-  #     - name: Create GitHub Issue
-  #       uses: actions/github-script@v6
-  #       with:
-  #         script: |
-  #           const title = 'Cypress Test Suite Failure in CI Pipeline';
-  #           const body = `The Cypress test suite in the CI pipeline has failed. 
-  #                         Please investigate the issue.
-  #                         \n\nSee the [workflow run](${github.context.run_url}) for more details.`;
-  #           github.issues.create({
-  #             owner: context.repo.owner,
-  #             repo: context.repo.repo,
-  #             title: title,
-  #             body: body,
-  #             labels: ['bug', 'CI-failure'],
-  #           });
+#   create-issue-on-failure:
+#     runs-on: ubuntu-22.04
+#     needs: cypress-run
+#     if: ${{ needs.cypress-run.result == 'failure' }}
+#     steps:
+#       - name: Create GitHub Issue
+#         uses: actions/github-script@v6
+#         with:
+#           script: |
+#             const title = 'Cypress Test Suite Failure in CI Pipeline';
+#             const body = `The Cypress test suite in the CI pipeline has failed. 
+#                           Please investigate the issue.
+#                           \n\nSee the [workflow run](${github.context.run_url}) for more details.`;
+#             github.issues.create({
+#               owner: context.repo.owner,
+#               repo: context.repo.repo,
+#               title: title,
+#               body: body,
+#               labels: ['bug', 'CI-failure'],
+#             });
 
 
 
