@@ -1,64 +1,66 @@
-name: End-to-end tests
+name: CI-Test
 
-on: 
+on:
   push:
     branches:
       - main
   pull_request:
-    branches:
-      - main
- 
+
 jobs:
-  cypress-run:
-    runs-on: ubuntu-22.04
+  build:
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
-      # Install npm dependencies, cache them correctly
-      # and run all Cypress tests
-      - name: Cypress run
-        uses: cypress-io/github-action@v6
-        continue-on-error: true
-        
-      # Store screenshots only on failures
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: cypress/screenshots
-          if-no-files-found: ignore
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      # Store videos always, even if tests pass
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: cypress-videos
-          path: cypress/videos
-          if-no-files-found: ignore
+    - name: Install dependencies
+      run: npm install
 
-  # create-issue-on-failure:
-  #   runs-on: ubuntu-22.04
-  #   needs: cypress-run
-    # if: ${{ needs.cypress-run.result == 'failure' }}
-    # steps:
-    #   - name: Create GitHub Issue
-      - uses: actions/github-script@v6
-        with:
-           script: |
-            const runId = process.env.GITHUB_RUN_ID;
-            const runUrl = `https://github.com/${{ github.repository }}/actions/runs/${runId}`;
-            const title = 'Cypress Test Suite Failure in CI Pipeline';
-            const body = `The Cypress test suite in the CI pipeline has failed. 
-                          Please investigate the issue.
-                          \n\nSee the [workflow run](${runUrl}) for more details.`;
-            github.issues.create({
+    - name: Run Cypress tests
+      run: npm run test
+      continue-on-error: true  # Continue running even if the tests fail
+
+    - name: Create GitHub Issue on Test Failure
+      if: failure()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const { Octokit } = require("@octokit/rest");
+          const octokit = new Octokit({ auth: process.env.GH_TOKEN });
+
+          const { data: issues } = await octokit.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: "cypress-failure",
+            state: "open"
+          });
+
+          if (issues.length === 0) {
+            await octokit.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: title,
-              body: body,
-              labels: ['bug', 'CI-failure'],
+              title: `Cypress Test Failure in ${context.workflow}`,
+              body: `A test failed in the CI-Test pipeline.\n\nCheck the latest [workflow run](${context.payload.workflow_run.html_url}) for details.`,
+              labels: ["cypress-failure"],
             });
+          }
+      env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+    - name: Upload Cypress Artifacts
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: cypress-videos
+        path: cypress/videos
+
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: cypress-results
+        path: cypress/results
 
 
 
@@ -67,94 +69,59 @@ jobs:
 
 
 
-          
 
-#   # create-issue-on-failure:
-# #   runs-on: ubuntu-22.04
-#   #   needs: cypress-run
-#   #   if: ${{ needs.cypress-run.result == 'failure' }}
-#   #   steps:
-#   #     - name: Create GitHub Issue
-#       - uses: actions/github-script@v6
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# name: End-to-end tests
+
+# on: 
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
+ 
+# jobs:
+#   cypress-run:
+#     runs-on: ubuntu-22.04
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+        
+#       # Install npm dependencies, cache them correctly
+#       # and run all Cypress tests
+#       - name: Cypress run
+#         uses: cypress-io/github-action@v6
+#         continue-on-error: true
+        
+#       # Store screenshots only on failures
+#       - uses: actions/upload-artifact@v4
 #         if: failure()
 #         with:
-#           script: |
-#             const title = 'Cypress Test Suite Failure in CI Pipeline';
-#             const body = `The Cypress test suite in the CI pipeline has failed. 
-#                           Please investigate the issue.
-#                           \n\nSee the [workflow run](${github.context.run_url}) for more details.`;
-#             github.issues.create({
-#               owner: context.repo.owner,
-#               repo: context.repo.repo,
-#               title: title,
-#               body: body,
-#               labels: ['bug', 'CI-failure'],
-#             });
+#           name: cypress-screenshots
+#           path: cypress/screenshots
+#           if-no-files-found: ignore
 
-
-
-
-
-          
-
-      # - name: Encode Screenshots
-      #   run: |
-      #     for file in $(find cypress/screenshots -type f); do
-      #       echo -n '{"text": "' >> payload.json
-      #       echo $(base64 $file) >> payload.json
-      #       echo '"},' >> payload.json
-      #     done
-  
-      # - name: Encode Videos
-      #   run: |
-      #     for file in $(find cypress/videos -type f); do
-      #       echo -n '{"text": "' >> payload.json
-      #       echo $(base64 $file) >> payload.json
-      #       echo '"},' >> payload.json
-      #     done
-
-      # - name: Clean Up Payload
-      #   run: rm -f payload.json
-
-
-
-
-
-      # - name: Notify Microsoft Teams
-      #   if: always()
-      #   run: |
-      #     STATUS="Success"
-      #     if [ "${{ job.status }}" != "success" ]; then
-      #       STATUS="Failure"
-      #     fi
-      #     curl -H 'Content-Type: application/json' \
-      #          -d '{
-      #                "text": "Cypress test run for `main` branch has completed.",
-      #                "themeColor": "0076D7",
-      #                "title": "Cypress Test Results: '"${STATUS}"'",
-      #                "sections": [
-      #                  {
-      #                    "activityTitle": "Test Status: '"${STATUS}"'",
-      #                    "activitySubtitle": "Repository: ${{ github.repository }}",
-      #                    "activityImage": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
-      #                    "facts": [
-      #                      {
-      #                        "name": "Branch",
-      #                        "value": "${{ github.ref }}"
-      #                      },
-      #                      {
-      #                        "name": "Commit",
-      #                        "value": "${{ github.sha }}"
-      #                      },
-      #                      {
-      #                        "name": "Workflow",
-      #                        "value": "${{ github.workflow }}"
-      #                      }
-      #                    ],
-      #                    "markdown": true
-      #                  }
-      #                ]
-      #              }' \
-      #          ${TEAMS_WEBHOOK_URL}
-      #    env:
-      #      TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+#       # Store videos always, even if tests pass
+#       - uses: actions/upload-artifact@v4
+#         if: always()
+#         with:
+#           name: cypress-videos
+#           path: cypress/videos
+#           if-no-files-found: ignore
