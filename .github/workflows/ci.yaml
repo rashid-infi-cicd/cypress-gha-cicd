@@ -18,7 +18,7 @@ jobs:
     - name: Cypress run
       uses: cypress-io/github-action@v6
       # continue-on-error: true
-      
+
     - uses: actions/upload-artifact@v4
       if: failure()
       with:
@@ -26,29 +26,14 @@ jobs:
           path: cypress/screenshots
           if-no-files-found: ignore
 
-    - name: Set failed tests output
-      id: set_failed_tests
-      run: |
-        if [ "${{ steps.cypress_run.outcome }}" == "failure" ]; then
-          echo "failed_tests=$(cat cypress/results/results.json | jq -r '.tests[] | select(.state == "failed") | .title')" >> $GITHUB_OUTPUT
-          echo "failed_tests_count=$(cat cypress/results/results.json | jq -r '.tests[] | select(.state == "failed") | .title' | wc -l)" >> $GITHUB_OUTPUT
-        else
-          echo "failed_tests=none" >> $GITHUB_OUTPUT
-          echo "failed_tests_count=0" >> $GITHUB_OUTPUT
-        fi
-
-
     - name: Create issue on failure
-      if: ${{ steps.set_failed_tests.outputs.failed_tests != 'none' }}
+      if: ${{ failure() }}
       uses: dacbd/create-issue-action@main
       with:
         token: ${{ secrets.GH_TOKEN }}
-        title: Cypress test faliure - ${{ steps.set_failed_tests.outputs.failed_tests_count }} tests failed
+        title: Cypress test fail in ${{ github.workflow }}
         body: |
-          The following tests failed in the workflow `${{ github.workflow }}` on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}):
-          
-          ${{ steps.set_failed_tests.outputs.failed_tests }}
-          
+          The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
           Check the latest [workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
 
           **Environment:** ${{ github.event_name }}  
@@ -59,10 +44,10 @@ jobs:
         #   cypress-failure
         #   automation
         #   bug  # Add any additional labels you want here
-        #   ${{ steps.set_failed_tests.outputs.failed_tests }}
+        #    ${{ steps.set_failed_tests.outputs.failed_tests }}
         #   assignees: |
         #   zartash-infini  # Replace with GitHub username
-        #   # username2  # Add more usernames as needed
+        #   username2  # Add more usernames as needed
 
 
 
