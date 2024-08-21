@@ -30,7 +30,7 @@ jobs:
       uses: dacbd/create-issue-action@main
       with:
         token: ${{ secrets.GH_TOKEN }}
-        title: Cypress test failure in ${{ github.workflow }}
+        title: Cypress test fail in ${{ github.workflow }}
         body: |
           The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
 
