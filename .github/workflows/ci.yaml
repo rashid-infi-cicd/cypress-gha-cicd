@@ -1,124 +1,130 @@
-name: CI
+name: CI Workflow
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
-
+    runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    # - name: Install dependencies
-    #   run: npm install
-      
+      - name: Run tests
+        run: npx cypress run
 
-    - name: Cypress run
-      # run: npx cypress run --headless
-      uses: cypress-io/github-action@v6
-      # continue-on-error: true  # Continue running even if the tests fail
-
-    # - uses: actions/upload-artifact@v4
-    #   if: failure()
-    #   with:
-    #       name: cypress-screenshots
-    #       path: cypress/screenshots
-    #       if-no-files-found: ignore
-
-    - name: Create GitHub Issue on Test Failure
-      if: failure()
-      # if: always()
-      uses: actions/github-script@v6
-      with:
-        script: |
-          console.log('Running issue creation script...');
-          if (core.getInput('conclusion') === 'failure') {
-            const issues = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              labels: "cypress-failure",
-              state: "open"
-            });
-            console.log(`Found ${issues.data.length} open issues with 'cypress-failure' label.`);
-
-            if (issues.data.length === 0) {
-              console.log('No existing issue found, creating a new one...');
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: `Cypress Test Failure in ${github.context.workflow}`,
-                body: `A test failed in the CI pipeline.\n\nCheck the latest [workflow run](${github.context.server_url}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.run_id}) for details.`,
-                labels: ["cypress-failure"],
-              });
-              console.log('Issue created successfully.');
-            } else {
-              console.log('Existing issue found, not creating a new one.');
-            }
-          } else {
-            console.log('No test failures detected, skipping issue creation.');
-          }
-      env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-    - name: Upload Cypress Artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: cypress-videos
-        path: cypress/videos
-
-    - name: Upload Test Results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: cypress-results
-        path: cypress/results
+      - name: Create Issue on Failure
+        if: failure()  # This condition ensures the step runs only if the previous steps fail
+        uses: nashmaniac/create-issue-action@v1.2
+        with:
+          title: Build Failed
+          token: ${{ secrets.GITHUB_TOKEN }}
+          assignees: ${{ github.actor }}
+          labels: workflow-failed
+          body: Workflow failed for commit ${{ github.sha }}
 
 
 
 
 
 
-# name: End-to-end tests
 
-# on: 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# name: CI
+
+# on:
 #   push:
 #     branches:
 #       - main
 #   pull_request:
-#     branches:
-#       - main
- 
-# jobs:
-#   cypress-run:
-#     runs-on: ubuntu-22.04
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
-        
-#       # Install npm dependencies, cache them correctly
-#       # and run all Cypress tests
-#       - name: Cypress run
-#         uses: cypress-io/github-action@v6
-#         continue-on-error: true
-        
-#       # Store screenshots only on failures
-#       - uses: actions/upload-artifact@v4
-#         if: failure()
-#         with:
-#           name: cypress-screenshots
-#           path: cypress/screenshots
-#           if-no-files-found: ignore
 
-#       # Store videos always, even if tests pass
-#       - uses: actions/upload-artifact@v4
-#         if: always()
-#         with:
-#           name: cypress-videos
-#           path: cypress/videos
-#           if-no-files-found: ignore
+# jobs:
+#   build:
+#     runs-on: ubuntu-22.04
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v4
+
+#     # - name: Install dependencies
+#     #   run: npm install
+      
+
+#     - name: Cypress run
+#       # run: npx cypress run --headless
+#       uses: cypress-io/github-action@v6
+#       # continue-on-error: true  # Continue running even if the tests fail
+
+#     # - uses: actions/upload-artifact@v4
+#     #   if: failure()
+#     #   with:
+#     #       name: cypress-screenshots
+#     #       path: cypress/screenshots
+#     #       if-no-files-found: ignore
+
+#     - name: Create GitHub Issue on Test Failure
+#       if: failure()
+#       # if: always()
+#       uses: actions/github-script@v6
+#       with:
+#         script: |
+#           console.log('Running issue creation script...');
+#           if (core.getInput('conclusion') === 'failure') {
+#             const issues = await github.rest.issues.listForRepo({
+#               owner: context.repo.owner,
+#               repo: context.repo.repo,
+#               labels: "cypress-failure",
+#               state: "open"
+#             });
+#             console.log(`Found ${issues.data.length} open issues with 'cypress-failure' label.`);
+
+#             if (issues.data.length === 0) {
+#               console.log('No existing issue found, creating a new one...');
+#               await github.rest.issues.create({
+#                 owner: context.repo.owner,
+#                 repo: context.repo.repo,
+#                 title: `Cypress Test Failure in ${github.context.workflow}`,
+#                 body: `A test failed in the CI pipeline.\n\nCheck the latest [workflow run](${github.context.server_url}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.run_id}) for details.`,
+#                 labels: ["cypress-failure"],
+#               });
+#               console.log('Issue created successfully.');
+#             } else {
+#               console.log('Existing issue found, not creating a new one.');
+#             }
+#           } else {
+#             console.log('No test failures detected, skipping issue creation.');
+#           }
+#       env:
+#           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+#     - name: Upload Cypress Artifacts
+#       if: always()
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: cypress-videos
+#         path: cypress/videos
+
+#     - name: Upload Test Results
+#       if: always()
+#       uses: actions/upload-artifact@v4
+#       with:
+#         name: cypress-results
+#         path: cypress/results
+
