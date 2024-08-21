@@ -52,14 +52,23 @@ jobs:
 
     - name: Upload Cypress Artifacts
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: cypress-videos
         path: cypress/videos
 
+    - name: Upload Cypress Screenshots
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+
+
     - name: Upload Test Results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: cypress-results
         path: cypress/results
