@@ -17,7 +17,7 @@ jobs:
         uses: nashmaniac/create-issue-action@v1.2
         with:
           title: Build Failed
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
           assignees: ${{ github.actor }}
           labels: workflow-failed
           body: Workflow failed for commit ${{ github.sha }}
