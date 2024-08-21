@@ -1,4 +1,4 @@
-name: CI
+name: CI-Test
 
 on:
   push:
@@ -23,16 +23,21 @@ jobs:
       uses: cypress-io/github-action@v6
       # continue-on-error: true  # Continue running even if the tests fail
 
-   
+    # - uses: actions/upload-artifact@v4
+    #   if: failure()
+    #   with:
+    #       name: cypress-screenshots
+    #       path: cypress/screenshots
+    #       if-no-files-found: ignore
 
     - name: Create GitHub Issue on Test Failure
-      if: failure()
-      # if: always()
+      # if: failure()
+      if: always()
       uses: actions/github-script@v6
       with:
         script: |
           console.log('Running issue creation script...');
-          const workflowName = github.context.workflow || 'CI';
+          if (github.context.payload.conclusion === 'failure') {
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -46,14 +51,17 @@ jobs:
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `Cypress Test Failure in ${workflowName}`,
-                body: `A test failed in the ${workflowName}.\n\nCheck the latest [workflow run](${github.context.server_url}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.run_id}) for details.`,
+                title: `Cypress Test Failure in ${github.context.workflow}`,
+                body: `A test failed in the CI pipeline.\n\nCheck the latest [workflow run](${github.context.server_url}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.run_id}) for details.`,
                 labels: ["cypress-failure"],
               });
               console.log('Issue created successfully.');
             } else {
               console.log('Existing issue found, not creating a new one.');
             }
+          } else {
+            console.log('No test failures detected, skipping issue creation.');
+          }
       env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
