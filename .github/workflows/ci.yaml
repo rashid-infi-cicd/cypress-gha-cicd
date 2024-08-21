@@ -31,8 +31,8 @@ jobs:
     #       if-no-files-found: ignore
 
     - name: Create GitHub Issue on Test Failure
-      # if: failure()
-      if: always()
+      if: failure()
+      # if: always()
       uses: actions/github-script@v6
       with:
         script: |
