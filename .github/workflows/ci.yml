@@ -8,17 +8,19 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Install dependencies
       run: npm install
+      
 
     - name: Run Cypress tests
-      run: npm run test
+      run: npx cypress run --headless
+      # uses: cypress-io/github-action@v6
       continue-on-error: true  # Continue running even if the tests fail
 
     - name: Create GitHub Issue on Test Failure
@@ -61,26 +63,6 @@ jobs:
       with:
         name: cypress-results
         path: cypress/results
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
