@@ -37,7 +37,7 @@ jobs:
       with:
         script: |
           console.log('Running issue creation script...');
-          if (github.context.payload.conclusion === 'failure') {
+          if (core.getInput('conclusion') === 'failure') {
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
