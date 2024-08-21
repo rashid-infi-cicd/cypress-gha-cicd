@@ -24,13 +24,14 @@ jobs:
       continue-on-error: true  # Continue running even if the tests fail
 
     - name: Create GitHub Issue on Test Failure
-      if: failure()
+      # if: failure()
+      if: always()
       uses: actions/github-script@v6
       with:
         script: |
           const { Octokit } = require("@octokit/rest");
           const octokit = new Octokit({ auth: process.env.GH_TOKEN });
-
+          if (github.event.workflow_run.conclusion === 'failure') {
           const { data: issues } = await octokit.rest.issues.listForRepo({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -38,7 +39,7 @@ jobs:
             state: "open"
           });
 
-          if (issues.length === 1) {
+          if (issues.length === 0) {
             await octokit.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -46,7 +47,7 @@ jobs:
               body: `A test failed in the CI-Test pipeline.\n\nCheck the latest [workflow run](${context.payload.workflow_run.html_url}) for details.`,
               labels: ["cypress-failure"],
             });
-          }
+          }}
       env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
