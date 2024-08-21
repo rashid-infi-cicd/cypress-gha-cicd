@@ -29,21 +29,23 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
-          const issues = await github.rest.issues.listForRepo({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            labels: "cypress-failure",
-            state: "open"
-          });
-
-          if (issues.data.length === 0 && github.context.workflow_run.conclusion === 'failure') {
-            await github.rest.issues.create({
+          if (core.getInput('conclusion') === 'failure') {
+            const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `Cypress Test Failure in ${github.context.workflow}`,
-              body: `A test failed in the CI-Test pipeline.\n\nCheck the latest [workflow run](${github.context.payload.workflow_run.html_url}) for details.`,
-              labels: ["cypress-failure"],
+              labels: "cypress-failure",
+              state: "open"
             });
+
+            if (issues.data.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Cypress Test Failure in ${github.context.workflow}`,
+                body: `A test failed in the CI pipeline.\n\nCheck the latest [workflow run](${github.context.server_url}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.run_id}) for details.`,
+                labels: ["cypress-failure"],
+              });
+            }
           }
       env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
