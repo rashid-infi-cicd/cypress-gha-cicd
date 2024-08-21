@@ -17,6 +17,8 @@ jobs:
 
     - name: Cypress run
       uses: cypress-io/github-action@v6
+      with:
+        record: true
       # continue-on-error: true
 
     - uses: actions/upload-artifact@v4
