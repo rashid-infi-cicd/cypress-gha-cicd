@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI
 
 on:
   push:
@@ -31,16 +31,13 @@ jobs:
     #       if-no-files-found: ignore
 
     - name: Create GitHub Issue on Test Failure
-      # if: failure()
-      if: always()
+      if: failure()
+      # if: always()
       uses: actions/github-script@v6
       with:
         script: |
           console.log('Running issue creation script...');
-
-          const workflowName = github.context.workflow || 'CI Pipeline';
-
-         
+          if (core.getInput('conclusion') === 'failure') {
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -54,7 +51,7 @@ jobs:
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `Cypress Test Failure in ${workflowName}`,
+                title: `Cypress Test Failure in ${github.context.workflow}`,
                 body: `A test failed in the CI pipeline.\n\nCheck the latest [workflow run](${github.context.server_url}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.run_id}) for details.`,
                 labels: ["cypress-failure"],
               });
@@ -62,7 +59,9 @@ jobs:
             } else {
               console.log('Existing issue found, not creating a new one.');
             }
-           
+          } else {
+            console.log('No test failures detected, skipping issue creation.');
+          }
       env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
