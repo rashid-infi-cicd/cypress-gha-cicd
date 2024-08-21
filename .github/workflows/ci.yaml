@@ -18,6 +18,13 @@ jobs:
     - name: Cypress run
       uses: cypress-io/github-action@v6
 
+    - uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          if-no-files-found: ignore
+
     - name: Create issue on failure
       if: ${{ failure() }}
       uses: dacbd/create-issue-action@main
@@ -26,20 +33,13 @@ jobs:
         title: Cypress test failure in ${{ github.workflow }}
         body: |
           The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
-          
+
     - name: Upload Cypress Artifacts
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: cypress-videos
         path: cypress/videos
-
-    - name: Upload Test Results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: cypress-results
-        path: cypress/results
 
 
 
