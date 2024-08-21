@@ -26,6 +26,18 @@ jobs:
           path: cypress/screenshots
           if-no-files-found: ignore
 
+    - name: Set failed tests output
+      id: set_failed_tests
+      run: |
+        if [ "${{ github.event_name }}" == "failure" ]; then
+          echo "failed_tests=$(cat cypress/results/results.json | jq -r '.tests[] | select(.state == "failed") | .title')" >> $GITHUB_OUTPUT
+          echo "failed_tests_count=$(cat cypress/results/results.json | jq -r '.tests[] | select(.state == "failed") | .title' | wc -l)" >> $GITHUB_OUTPUT
+        else
+          echo "failed_tests=none" >> $GITHUB_OUTPUT
+          echo "failed_tests_count=0" >> $GITHUB_OUTPUT
+        fi
+
+
     - name: Create issue on failure
       if: ${{ steps.set_failed_tests.outputs.failed_tests != 'none' }}
       uses: dacbd/create-issue-action@main
@@ -43,12 +55,12 @@ jobs:
           **Branch:** ${{ github.ref }}  
           **Commit Message:** ${{ github.event.head_commit.message }}
 
-          labels: |
-          cypress-failure
-          automation
-          bug  # Add any additional labels you want here
-          ${{ steps.set_failed_tests.outputs.failed_tests }}
-        #  assignees: |
+        #   labels: |
+        #   cypress-failure
+        #   automation
+        #   bug  # Add any additional labels you want here
+        #   ${{ steps.set_failed_tests.outputs.failed_tests }}
+        #   assignees: |
         #   zartash-infini  # Replace with GitHub username
         #   # username2  # Add more usernames as needed
 
