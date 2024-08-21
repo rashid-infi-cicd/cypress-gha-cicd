@@ -44,7 +44,7 @@ jobs:
               body: `A test failed in the CI-Test pipeline.\n\nCheck the latest [workflow run](${context.payload.workflow_run.html_url}) for details.`,
               labels: ["cypress-failure"],
             });
-          }}
+          }
       env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
