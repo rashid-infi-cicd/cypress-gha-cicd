@@ -29,17 +29,14 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
-          const { Octokit } = require("@octokit/rest");
-          const octokit = new Octokit({ auth: process.env.GH_TOKEN });
-          if (github.event.workflow_run.conclusion === 'failure') {
-          const { data: issues } = await octokit.rest.issues.listForRepo({
+          const issues = await octokit.issues.listForRepo({
             owner: context.repo.owner,
             repo: context.repo.repo,
             labels: "cypress-failure",
             state: "open"
           });
 
-          if (issues.length === 0) {
+          if (issues.data.length === 0 && github.event.workflow_run.conclusion === 'failure') {
             await octokit.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
