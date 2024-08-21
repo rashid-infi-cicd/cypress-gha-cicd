@@ -62,8 +62,6 @@ jobs:
           } else {
             console.log('No test failures detected, skipping issue creation.');
           }
-            }
-          }
       env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
