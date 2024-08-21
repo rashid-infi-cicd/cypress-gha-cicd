@@ -50,10 +50,12 @@ jobs:
       uses: dacbd/create-issue-action@main
       with:
         token: ${{ secrets.GH_TOKEN }}
-        title: Cypress test fail in ${{ github.workflow }}
+        title: ${{ steps.set_failed_tests.outputs.failed_tests_count }} tests failed
         body: |
-          The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
-          ${{ env.failed_tests }}
+          The following tests failed in the workflow `${{ github.workflow }}` on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}):
+          
+          ${{ steps.set_failed_tests.outputs.failed_tests }}
+          
           Check the latest [workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
 
           **Environment:** ${{ github.event_name }}  
@@ -64,7 +66,8 @@ jobs:
           cypress-failure
           automation
           bug  # Add any additional labels you want here
-        # assignees: |
+          ${{ steps.set_failed_tests.outputs.failed_tests }}
+        #  assignees: |
         #   zartash-infini  # Replace with GitHub username
         #   # username2  # Add more usernames as needed
 
