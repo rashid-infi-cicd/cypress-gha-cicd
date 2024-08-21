@@ -36,6 +36,7 @@ jobs:
       uses: actions/github-script@v6
       with:
         script: |
+          console.log('Running issue creation script...');
           if (core.getInput('conclusion') === 'failure') {
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -43,8 +44,10 @@ jobs:
               labels: "cypress-failure",
               state: "open"
             });
+            console.log(`Found ${issues.data.length} open issues with 'cypress-failure' label.`);
 
             if (issues.data.length === 0) {
+              console.log('No existing issue found, creating a new one...');
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -52,6 +55,13 @@ jobs:
                 body: `A test failed in the CI pipeline.\n\nCheck the latest [workflow run](${github.context.server_url}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.run_id}) for details.`,
                 labels: ["cypress-failure"],
               });
+              console.log('Issue created successfully.');
+            } else {
+              console.log('Existing issue found, not creating a new one.');
+            }
+          } else {
+            console.log('No test failures detected, skipping issue creation.');
+          }
             }
           }
       env:
