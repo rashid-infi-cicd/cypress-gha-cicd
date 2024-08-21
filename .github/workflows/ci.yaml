@@ -33,6 +33,22 @@ jobs:
         title: Cypress test fail in ${{ github.workflow }}
         body: |
           The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
+          Step: ${{ steps.cypress_run.outcome }}  # Assuming 'cypress_run' is the step ID for Cypress run
+          Check the latest [workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
+
+          **Environment:** ${{ github.event_name }}  
+          **Branch:** ${{ github.ref }}  
+          **Commit Message:** ${{ github.event.head_commit.message }}
+
+          labels: |
+          cypress-failure
+          automation
+          bug  # Add any additional labels you want here
+        assignees: |
+          username1  # Replace with GitHub username
+          username2  # Add more usernames as needed
+
+
 
     - name: Upload Cypress Artifacts
       if: always()
