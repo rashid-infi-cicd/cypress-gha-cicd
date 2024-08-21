@@ -1,4 +1,4 @@
-name: CI-Test
+name: CI Pipeline
 
 on:
   push:
@@ -37,7 +37,10 @@ jobs:
       with:
         script: |
           console.log('Running issue creation script...');
-          if (core.getInput('conclusion') === 'failure') {
+
+          const workflowName = github.context.workflow || 'CI Pipeline';
+
+         
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -51,7 +54,7 @@ jobs:
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `Cypress Test Failure in ${github.context.workflow}`,
+                title: `Cypress Test Failure in ${github.context.workflows[workflowName]}`,
                 body: `A test failed in the CI pipeline.\n\nCheck the latest [workflow run](${github.context.server_url}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.run_id}) for details.`,
                 labels: ["cypress-failure"],
               });
@@ -59,7 +62,7 @@ jobs:
             } else {
               console.log('Existing issue found, not creating a new one.');
             }
-          } else {
+           else {
             console.log('No test failures detected, skipping issue creation.');
           }
       env:
