@@ -1,27 +1,29 @@
-name: CI Workflow
+name: CI
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Run tests
-        run: npx cypress run
-
-      - name: Create Issue on Failure
-        if: failure()  # This condition ensures the step runs only if the previous steps fail
-        uses: nashmaniac/create-issue-action@v1.2
-        with:
-          title: Build Failed
-          token: ${{ secrets.GH_TOKEN }}
-          assignees: ${{ github.actor }}
-          labels: workflow-failed
-          body: Workflow failed for commit ${{ github.sha }}
-
+    - uses: actions/checkout@v4
+    
+    - name: Run a failing command
+      run: exit 1
+      
+    - name: Create issue on failure
+      if: ${{ failure() }}
+      uses: dacbd/create-issue-action@main
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        title: Workflow failure in ${{ github.workflow }}
+        body: |
+          The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
+          
+           Job: ${{ job.job }}
+           Step: ${{ steps.stepName.outcome }}
 
 
 
