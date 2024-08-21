@@ -14,13 +14,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Install dependencies
-      run: npm install
+    # - name: Install dependencies
+    #   run: npm install
       
 
-    - name: Run Cypress tests
-      run: npx cypress run --headless
-      # uses: cypress-io/github-action@v6
+    - name: Cypress run
+      # run: npx cypress run --headless
+      uses: cypress-io/github-action@v6
       continue-on-error: true  # Continue running even if the tests fail
 
     - name: Create GitHub Issue on Test Failure
@@ -38,7 +38,7 @@ jobs:
             state: "open"
           });
 
-          if (issues.length === 0) {
+          if (issues.length === 1) {
             await octokit.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,

@@ -12,5 +12,6 @@ module.exports = defineConfig({
     videosFolder: 'cypress/videos',
     trashAssetsBeforeRuns: false,
     screenshotOnRunFailure: true,
+    resultsFolder: 'cypress/results',
   },
 });
