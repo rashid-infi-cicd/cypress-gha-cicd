@@ -31,14 +31,15 @@ jobs:
     #       if-no-files-found: ignore
 
     - name: Create GitHub Issue on Test Failure
-      # if: failure()
-      if: always()
+      if: failure()
+      # if: always()
       uses: actions/github-script@v6
       with:
         script: |
           console.log('Running issue creation script...');
-          
-          if (github.context.payload.conclusion === 'failure') {
+
+          # if (github.context.payload.conclusion === 'failure') {
+
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -60,7 +61,7 @@ jobs:
             } else {
               console.log('Existing issue found, not creating a new one.');
             }
-          } else {
+           else {
             console.log('No test failures detected, skipping issue creation.');
           }
       env:
