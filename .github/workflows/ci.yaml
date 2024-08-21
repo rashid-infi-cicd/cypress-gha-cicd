@@ -18,26 +18,7 @@ jobs:
     - name: Cypress run
       uses: cypress-io/github-action@v6
       # continue-on-error: true
-
-    - name: Set failed tests output
-      id: set_failed_tests
-      run: |
-        if [ "${{ steps.cypress_run.outcome }}" == "failure" ]; then
-          echo "failed_tests=$(cat cypress/results/results.json | jq '.tests[] | select(.state == "failed") | .title')" >> $GITHUB_ENV
-        else
-          echo "failed_tests=none" >> $GITHUB_ENV
-        fi
-
-
-
-
-
-
-
-
-
-
-
+      
     - uses: actions/upload-artifact@v4
       if: failure()
       with:
@@ -46,11 +27,11 @@ jobs:
           if-no-files-found: ignore
 
     - name: Create issue on failure
-      if: ${{ failure() }}
+      if: ${{ steps.set_failed_tests.outputs.failed_tests != 'none' }}
       uses: dacbd/create-issue-action@main
       with:
         token: ${{ secrets.GH_TOKEN }}
-        title: ${{ steps.set_failed_tests.outputs.failed_tests_count }} tests failed
+        title: Cypress test faliure - ${{ steps.set_failed_tests.outputs.failed_tests_count }} tests failed
         body: |
           The following tests failed in the workflow `${{ github.workflow }}` on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}):
           
