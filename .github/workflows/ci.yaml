@@ -15,10 +15,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Install dependencies
+      run: npm install
+
     - name: Cypress run
       uses: cypress-io/github-action@v6
       with:
-        record: true
+        browser: chrome
+        # record: true
       # continue-on-error: true
 
     - uses: actions/upload-artifact@v4
@@ -28,14 +32,14 @@ jobs:
           path: cypress/screenshots
           if-no-files-found: ignore
 
-    - name: Notify Teams on Success
-      if: success()  # This step only runs if the job is successful
-      env:
-             GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Reference your secret
-      run: |
-         curl -H 'Content-Type: application/json' -d '{
-            "text": "✅ Workflow succeeded! The latest build for the branch `main` passed successfully."
-         }' $GH-WEBHOOK-URL
+    # - name: Notify Teams on Success
+    #   if: success()  # This step only runs if the job is successful
+    #   env:
+    #          GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Reference your secret
+    #   run: |
+    #      curl -H 'Content-Type: application/json' -d '{
+    #         "text": "✅ Workflow succeeded! The latest build for the branch `main` passed successfully."
+    #      }' $GH-WEBHOOK-URL
 
 
 
