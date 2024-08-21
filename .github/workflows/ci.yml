@@ -36,7 +36,7 @@ jobs:
             state: "open"
           });
 
-          if (issues.data.length === 0 && github.event.workflow_run.conclusion === 'failure') {
+          if (issues.data.length === 0 && github.context.workflow_run.conclusion === 'failure') {
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
