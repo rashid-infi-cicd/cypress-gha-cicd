@@ -54,7 +54,7 @@ jobs:
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `Cypress Test Failure in ${github.context.workflows[workflowName]}`,
+                title: `Cypress Test Failure in ${workflowName}`,
                 body: `A test failed in the CI pipeline.\n\nCheck the latest [workflow run](${github.context.server_url}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.run_id}) for details.`,
                 labels: ["cypress-failure"],
               });
