@@ -19,6 +19,25 @@ jobs:
       uses: cypress-io/github-action@v6
       continue-on-error: true
 
+    - name: Set failed tests output
+      id: set_failed_tests
+      run: |
+        if [ "${{ steps.cypress_run.outcome }}" == "failure" ]; then
+          echo "failed_tests=$(cat cypress/results/results.json | jq '.tests[] | select(.state == "failed") | .title')" >> $GITHUB_ENV
+        else
+          echo "failed_tests=none" >> $GITHUB_ENV
+        fi
+
+
+
+
+
+
+
+
+
+
+
     - uses: actions/upload-artifact@v4
       if: failure()
       with:
@@ -34,6 +53,7 @@ jobs:
         title: Cypress test fail in ${{ github.workflow }}
         body: |
           The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
+          ${{ env.failed_tests }}
           Check the latest [workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
 
           **Environment:** ${{ github.event_name }}  
