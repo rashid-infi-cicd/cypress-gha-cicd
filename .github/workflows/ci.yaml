@@ -29,7 +29,7 @@ jobs:
     - name: Set failed tests output
       id: set_failed_tests
       run: |
-        if [ "${{ github.event_name }}" == "failure" ]; then
+        if [ "${{ steps.cypress_run.outcome }}" == "failure" ]; then
           echo "failed_tests=$(cat cypress/results/results.json | jq -r '.tests[] | select(.state == "failed") | .title')" >> $GITHUB_OUTPUT
           echo "failed_tests_count=$(cat cypress/results/results.json | jq -r '.tests[] | select(.state == "failed") | .title' | wc -l)" >> $GITHUB_OUTPUT
         else
