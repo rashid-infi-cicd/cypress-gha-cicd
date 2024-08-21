@@ -1,29 +1,89 @@
 name: CI
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
 
   build:
-    runs-on: ubuntu-latest
-    
+    runs-on: ubuntu-22.04
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Run a failing command
-      run: exit 1
-      
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Cypress run
+      uses: cypress-io/github-action@v6
+
     - name: Create issue on failure
       if: ${{ failure() }}
       uses: dacbd/create-issue-action@main
       with:
         token: ${{ secrets.GH_TOKEN }}
-        title: Workflow failure in ${{ github.workflow }}
+        title: Cypress test failure in ${{ github.workflow }}
         body: |
           The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
           
-           Job: ${{ job.job }}
-           Step: ${{ steps.stepName.outcome }}
+    - name: Upload Cypress Artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cypress-videos
+        path: cypress/videos
+
+    - name: Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cypress-results
+        path: cypress/results
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# name: CI
+
+# on: [push]
+
+# jobs:
+
+#   build:
+#     runs-on: ubuntu-latest
+    
+#     steps:
+#     - uses: actions/checkout@v4
+    
+#     - name: Run a failing command
+#       run: exit 1
+      
+#     - name: Create issue on failure
+#       if: ${{ failure() }}
+#       uses: dacbd/create-issue-action@main
+#       with:
+#         token: ${{ secrets.GH_TOKEN }}
+#         title: Workflow failure in ${{ github.workflow }}
+#         body: |
+#           The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
+          
+#            Job: ${{ job.job }}
+#            Step: ${{ steps.stepName.outcome }}
 
 
 
