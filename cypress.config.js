@@ -9,7 +9,6 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
       require('cypress-mochawesome-reporter/plugin')(on);
-
       return config
     },
     reporter: 'cypress-mochawesome-reporter',
@@ -35,8 +34,7 @@ module.exports = defineConfig({
     video: true,
     screenshotsFolder: 'cypress/screenshots',
     videosFolder: 'cypress/videos',
-    trashAssetsBeforeRuns: false,
+    reportDir: 'cypress/reports',
     screenshotOnRunFailure: true,
-    resultsFolder: 'cypress/results',
   },
 });
