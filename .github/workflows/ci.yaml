@@ -33,7 +33,14 @@ jobs:
       continue-on-error: true
       env:
           CI: true
-      
+    # - name: Clean up old reports
+    #   run: |
+    #         rm -rf cypress/reports/*.html
+    #         rm -rf cypress/videos/*
+    #         rm -rf cypress/screenshots/*
+
+
+
 
 
       # Generate Mocha Report
@@ -98,64 +105,64 @@ jobs:
         path: cypress/videos
 
 
-    # - name: Push Cypress artifacts
-    #   run: |
-    #       git config user.name "github-actions[bot]"
-    #       git config user.email "github-actions[bot]@users.noreply.github.com"
-    #       git add cypress/videos/ cypress/screenshots/ cypress/reports/
-    #       git commit -m "Add Cypress artifacts from CI"
-    #       git push origin HEAD:main
-    #   env:
-    #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-
-
-
-
-
-    - name: Check permissions
+    - name: Push Cypress artifacts
+      run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add cypress/videos/ cypress/screenshots/ cypress/reports/
+          git commit -m "Add Cypress artifacts from CI"
+          git push origin HEAD:main
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      run: |
-        curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/collaborators
+
+
+
+
+
+
+    # - name: Check permissions
+    #   env:
+    #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+    #   run: |
+    #     curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/collaborators
         
 
-    - name: Commit screenshots, videos and reports
-      run: |
-        git config --local user.email "rashid.6689@gmail.com"  # Replace with your email
-        git config --local user.name "rashid-infi-cicd"  # Replace with your name
+    # - name: Commit screenshots, videos and reports
+    #   run: |
+    #     git config --local user.email "rashid.6689@gmail.com"  # Replace with your email
+    #     git config --local user.name "rashid-infi-cicd"  # Replace with your name
         
-        # Check if there are any screenshots to commit
-        if [ "$(ls -A cypress/screenshots)" ]; then
-          git add cypress/screenshots
-        else
-          echo "No screenshots to commit."
-        fi
+    #     # Check if there are any screenshots to commit
+    #     if [ "$(ls -A cypress/screenshots)" ]; then
+    #       git add cypress/screenshots
+    #     else
+    #       echo "No screenshots to commit."
+    #     fi
 
-        # Check if there are any videos to commit
-        if [ "$(ls -A cypress/videos)" ]; then
-          git add cypress/videos
-        else
-          echo "No videos to commit."
-        fi
+    #     # Check if there are any videos to commit
+    #     if [ "$(ls -A cypress/videos)" ]; then
+    #       git add cypress/videos
+    #     else
+    #       echo "No videos to commit."
+    #     fi
 
-        # Check if there are any reports to commit
-        if [ "$(ls -A cypress/reports)" ]; then
-          git add cypress/reports
-        else
-          echo "No reports to commit."
-        fi
+    #     # Check if there are any reports to commit
+    #     if [ "$(ls -A cypress/reports)" ]; then
+    #       git add cypress/reports
+    #     else
+    #       echo "No reports to commit."
+    #     fi
 
-        # Commit if there are any changes
-        if ! git diff --cached --quiet; then
-          git commit -m "Add Cypress artifacts from CI"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
-          else
-          echo "No changes to commit."
-        fi
+    #     # Commit if there are any changes
+    #     if ! git diff --cached --quiet; then
+    #       git commit -m "Add Cypress artifacts from CI"
+    #       git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+    #       else
+    #       echo "No changes to commit."
+    #     fi
         
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
       
 
 
