@@ -92,6 +92,18 @@ jobs:
         name: cypress-videos
         path: cypress/videos
 
+    - name: Commit screenshots, videos and reports
+      run: |
+        git config --local user.email "your-email@example.com"  # Replace with your email
+        git config --local user.name "Your Name"  # Replace with your name
+        git add cypress/screenshots
+        git add cypress/videos
+        git add cypress/reports
+        git commit -m "Add Cypress artifacts from CI" || echo "No changes to commit"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
+
 
 
 
