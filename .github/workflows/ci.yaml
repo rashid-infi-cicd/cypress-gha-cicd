@@ -97,9 +97,10 @@ jobs:
         name: cypress-videos
         path: cypress/videos
 
+
     - name: Check permissions
       env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
       run: |
         curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/collaborators
         
