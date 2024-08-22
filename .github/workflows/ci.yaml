@@ -30,7 +30,7 @@ jobs:
       with:
         browser: chrome
         # record: true
-      # continue-on-error: true
+      continue-on-error: true
       env:
           CI: true
       
@@ -100,7 +100,7 @@ jobs:
 
     - name: Check permissions
       env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
         curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/collaborators
         
@@ -139,7 +139,7 @@ jobs:
           echo "No changes to commit."
         fi
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}  # Use the token for authentication
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
 
 
 
