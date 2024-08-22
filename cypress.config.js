@@ -17,7 +17,7 @@ module.exports = defineConfig({
     reporterOptions: {
       //reportTitle: 'Feather Cypress Mocha Report',
       //reportPageTitle: 'Feather Cypress Mocha Report',
-      reportDir: 'cypress/reports/',
+      reportDir: 'cypress/reports',
       overwrite: true,
       html: true,
       json: true,
