@@ -14,10 +14,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # - name: Install cypress and verify
-    #   run: |
-    #    npm ci
-    #    $(npm bin)/cypress verify
+    - name: Install cypress and verify
+      run: |
+       npm ci
+       $(npm bin)/cypress verify
 
 
 
@@ -30,8 +30,8 @@ jobs:
         browser: chrome
         # record: true
       # continue-on-error: true
-      env:
-          CI: true
+      # env:
+      #     CI: true
       # Generate Mocha Report
     - name: Generate Mochawesome report
       run: npm run mochaowesome:report
