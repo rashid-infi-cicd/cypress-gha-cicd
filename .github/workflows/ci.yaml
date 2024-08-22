@@ -106,6 +106,9 @@ jobs:
         
 
     - name: Commit screenshots, videos and reports
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
+
       run: |
         git config --local user.email "rashid.6689@gmail.com"  # Replace with your email
         git config --local user.name "rashid-infi-cicd"  # Replace with your name
@@ -138,9 +141,7 @@ jobs:
           else
           echo "No changes to commit."
         fi
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
-
+      
 
 
 
