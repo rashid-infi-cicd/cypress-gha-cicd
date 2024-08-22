@@ -13,6 +13,18 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+       token: ${{ secrets.GH_TOKEN }} # Use the token secret
+
+# If you need to push changes
+    - name: Push changes
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "Your commit message"
+        git push origin main
+
 
     # - name: Install cypress and verify
     #   run: npm install -g cypress
@@ -31,6 +43,9 @@ jobs:
       # continue-on-error: true
       env:
           CI: true
+      
+
+
       # Generate Mocha Report
     - name: Generate Mochawesome report
       run: npm run mochaowesome:report
