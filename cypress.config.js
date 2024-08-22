@@ -4,7 +4,7 @@ module.exports = defineConfig({
   // projectId: 'q5vq9a',
   e2e: {
     baseUrl: "https://example.cypress.io",
-    specPattern: ['cypress/e2e/**/*.cy.js'],
+    specPattern: 'cypress/e2e/**/*.cy.js',
     // chromeWebSecurity: false,
     setupNodeEvents(on, config) {
       // implement node event listeners here
@@ -13,15 +13,15 @@ module.exports = defineConfig({
       return config
     },
     reporter: 'cypress-mochawesome-reporter',
-    experimentalRunAllSpecs: true,
+    // experimentalRunAllSpecs: true,
     reporterOptions: {
-      reportTitle: 'Feather Cypress Mocha Report',
+      //reportTitle: 'Feather Cypress Mocha Report',
       //reportPageTitle: 'Feather Cypress Mocha Report',
-      reportDir: 'cypress/reports/',
+      reportDir: 'cypress/reports',
       overwrite: false,
       html: true,
       json: true,
-      reportFilename: mochawesome,//'Feather mocha full report',
+      //reportFilename: mochawesome,//'Feather mocha full report',
       screenshotOnRunFailure: true,
       charts: true,
       inlineAssets: true,
