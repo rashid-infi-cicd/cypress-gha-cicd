@@ -103,6 +103,7 @@ jobs:
       run: |
         git config --local user.email "rashid.6689@gmail.com"  # Replace with your email
         git config --local user.name "rashid-infi-cicd"  # Replace with your name
+        
         # Check if there are any screenshots to commit
         if [ "$(ls -A cypress/screenshots)" ]; then
           git add cypress/screenshots
@@ -127,8 +128,8 @@ jobs:
         # Commit if there are any changes
         if ! git diff --cached --quiet; then
           git commit -m "Add Cypress artifacts from CI"
-          git push
-        else
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+          else
           echo "No changes to commit."
         fi
       env:
