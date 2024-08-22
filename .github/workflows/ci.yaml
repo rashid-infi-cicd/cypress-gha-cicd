@@ -22,8 +22,8 @@ jobs:
     # - name: Verify cypress
     #   run: cypress verify
 
-    # - name: Install dependencies
-    #   run: npm install
+    - name: Install dependencies
+      run: npm install
 
     - name: Cypress run
       uses: cypress-io/github-action@v6
