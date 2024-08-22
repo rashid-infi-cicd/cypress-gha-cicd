@@ -1,10 +1,11 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
-  projectId: 'q5vq9a',
+  // projectId: 'q5vq9a',
   e2e: {
     baseUrl: "https://example.cypress.io",
-    chromeWebSecurity: false,
+    specPattern: ['cypress/e2e/**/*.cy.js'],
+    // chromeWebSecurity: false,
     setupNodeEvents(on, config) {
       // implement node event listeners here
       require('cypress-mochawesome-reporter/plugin')(on);
