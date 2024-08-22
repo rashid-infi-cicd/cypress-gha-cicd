@@ -20,7 +20,7 @@ module.exports = defineConfig({
       overwrite: true,
       html: true,
       json: true,
-      //reportFilename: 'mochawesome',//'Feather mocha full report',
+      reportFilename: 'mochawesome',//'Feather mocha full report',
       screenshotOnRunFailure: true,
       charts: true,
       inlineAssets: true,
