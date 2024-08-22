@@ -7,13 +7,19 @@ on:
   pull_request:
 
 jobs:
-
-  build:
+  cypress-test-build:
     runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    # - name: Install cypress and verify
+    #   run: |
+    #    npm ci
+    #    $(npm bin)/cypress verify
+
+
 
     - name: Install dependencies
       run: npm install
@@ -24,6 +30,18 @@ jobs:
         browser: chrome
         # record: true
       # continue-on-error: true
+      env:
+          CI: true
+      # Generate Mocha Report
+    - name: Generate Mochawesome report
+      run: npm run mochaowesome:report
+
+    - name: Upload Mochawesome report
+      uses: actions/upload-artifact@v4
+      with:
+          name: cypress-report
+          path: cypress/reports/mochawesome.html
+
 
     - uses: actions/upload-artifact@v4
       if: failure()
