@@ -9,6 +9,8 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
       require('cypress-mochawesome-reporter/plugin')(on);
+
+      return config
     },
     reporter: 'cypress-mochawesome-reporter',
     experimentalRunAllSpecs: true,
@@ -19,11 +21,7 @@ module.exports = defineConfig({
       overwrite: false,
       html: true,
       json: true,
-      //For single spec files, use the base name of the spec file
-      //reportFilename: 'report-[name]-[datetime]',
-      //For all specs, use "Combined Report"
-      // reportDir: 'cypress/reports/mocha',
-       reportFilename: mochawesome,//'Feather mocha full report',
+      reportFilename: mochawesome,//'Feather mocha full report',
       screenshotOnRunFailure: true,
       charts: true,
       inlineAssets: true,
