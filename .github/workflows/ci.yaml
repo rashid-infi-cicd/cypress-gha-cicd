@@ -96,11 +96,34 @@ jobs:
       run: |
         git config --local user.email "rashid.6689@gmail.com"  # Replace with your email
         git config --local user.name "rashid-infi-cicd"  # Replace with your name
-        git add cypress/screenshots
-        git add cypress/videos
-        git add cypress/reports
-        git commit -m "Add Cypress artifacts from CI" || echo "No changes to commit"
-        git push
+        # Check if there are any screenshots to commit
+        if [ "$(ls -A cypress/screenshots)" ]; then
+          git add cypress/screenshots
+        else
+          echo "No screenshots to commit."
+        fi
+
+        # Check if there are any videos to commit
+        if [ "$(ls -A cypress/videos)" ]; then
+          git add cypress/videos
+        else
+          echo "No videos to commit."
+        fi
+
+        # Check if there are any reports to commit
+        if [ "$(ls -A cypress/reports)" ]; then
+          git add cypress/reports
+        else
+          echo "No reports to commit."
+        fi
+
+        # Commit if there are any changes
+        if ! git diff --cached --quiet; then
+          git commit -m "Add Cypress artifacts from CI"
+          git push
+        else
+          echo "No changes to commit."
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
 
