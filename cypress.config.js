@@ -30,8 +30,6 @@ module.exports = defineConfig({
     video: true,
     videoCompression: true,
     videoCompression: 15,
-    screenshotOnRunFailure: true,
-    videosFolder: "cypress/videos",
-    screenshotsFolder: "cypress/screenshots",
+  
   },
 });

@@ -70,45 +70,6 @@ jobs:
         if-no-files-found: ignore
 
 
-    
-
-    # - name: Create issue on failure
-    #   if: ${{ failure() }}
-    #   uses: dacbd/create-issue-action@main
-    #   with:
-    #     token: ${{ secrets.GH_TOKEN }}
-    #     title: Cypress test fail in ${{ github.workflow }}
-    #     body: |
-    #       The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
-    #       Check the latest [workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
-
-    #       **Environment:** ${{ github.event_name }}  
-    #       **Branch:** ${{ github.ref }}  
-    #       **Commit Message:** ${{ github.event.head_commit.message }}
-
-    #       **Screenshots:** [Download Screenshots](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-screenshots)
-    #       **Videos:** [Download Videos](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-videos)
-    #       **Mochawesome Report:** [Download Report](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-report)
-    
-    - name: Create GitHub issue
-      if: failure()
-      uses: dacbd/create-issue-action@main
-      with:
-        token: ${{ secrets.GH_TOKEN }}
-        title: Test Failure in Run #${{ github.run_number }}
-        body: |
-          The tests in this run have failed. You can find the artifacts at the following links:
-          [Videos](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-videos)
-          [Screenshots](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-screenshots)
-          [Mochawesome Report](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-report)
-      env:
-            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-
-
-
-
-
     - name: Push Cypress artifacts on failed
       if: ${{ failure() }}
       run: |  
@@ -120,6 +81,25 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
+
+    
+
+    - name: Create issue on failure
+      if: ${{ failure() }}
+      uses: dacbd/create-issue-action@main
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+        title: Cypress test fail in ${{ github.workflow }}
+        body: |
+          The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
+          Check the latest [workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.
+
+          **Environment:** ${{ github.event_name }}  
+          **Branch:** ${{ github.ref }}  
+          **Commit Message:** ${{ github.event.head_commit.message }}
+
+          Check the [report](https://github.com/${{ github.repository }}/blob/main/cypress/reports/mochawesome.html for more details.
+          
 
     - name: Check permissions
       env:
