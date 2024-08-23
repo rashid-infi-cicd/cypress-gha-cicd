@@ -109,7 +109,6 @@ jobs:
         curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/collaborators
         
 
-
     - name: Push Cypress artifacts on failed
       if: ${{ failure() }}
       run: |  
