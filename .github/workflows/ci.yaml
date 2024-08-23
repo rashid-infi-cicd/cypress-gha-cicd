@@ -92,22 +92,24 @@ jobs:
     
     - name: Create GitHub issue
       if: failure()
-      uses: actions/github-script@v6
+      uses: dacbd/create-issue-action@main
       with:
-       script: |
+        token: ${{ secrets.GH_TOKEN }}
+        title: Test Failure in Run #${{ github.run_number }}
+        body: |
       
-         const releaseUrl = `https://github.com/${{ github.repository }}/releases/tag/cypress-artifacts-${{ github.run_number }}`;
+          const releaseUrl = `https://github.com/${{ github.repository }}/releases/tag/cypress-artifacts-${{ github.run_number }}`;
         
           const issue = await github.issues.create({
           owner: context.repo.owner,
           repo: context.repo.repo,
           title: `Test Failure in Run #${{ github.run_number }}`,
           body: `The tests in this run have failed. You can find the screenshots, videos, and reports at the following link:\n\n[Artifacts](${releaseUrl})`
-         });
+          });
 
           console.log(`Created issue: ${issue.data.html_url}`);
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+    #  env:
+    #         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
 
 
