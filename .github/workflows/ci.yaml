@@ -42,9 +42,6 @@ jobs:
             rm -rf cypress/screenshots/*
 
 
-
-
-
       # Generate Mocha Report
     - name: Generate Mochawesome report
       run: npm run mochaowesome:report
@@ -62,6 +59,13 @@ jobs:
           name: cypress-screenshots
           path: cypress/screenshots
           if-no-files-found: ignore
+
+    - name: Upload Cypress Artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cypress-videos
+        path: cypress/videos
 
     # - name: Notify Teams on Success
     #   if: success()  # This step only runs if the job is successful
@@ -98,29 +102,15 @@ jobs:
         #   username2  # Add more usernames as needed
 
 
-
-    - name: Upload Cypress Artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: cypress-videos
-        path: cypress/videos
-
-
-    # - name: Push Cypress artifacts
-    #   run: |
-    #       git config user.name "github-actions[bot]"
-    #       git config user.email "github-actions[bot]@users.noreply.github.com"
-    #       git add cypress/videos/ cypress/screenshots/ cypress/reports/
-    #       git commit -m "Add Cypress artifacts from failed tests"
-    #       git push origin HEAD:main
-    #   env:
-    #       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
-
-
-
-
+    - name: Push Cypress artifacts on failed
+      run: |  
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add cypress/videos/ cypress/screenshots/ cypress/reports/
+          git commit -m "Add Cypress artifacts from failed tests"
+          git push origin HEAD:main
+      env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
     - name: Check permissions
       env:
@@ -166,191 +156,42 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
 
-
-
-    - name: On fails Commit & Push screenshots, videos and reports
-      if: ${{ failure() }}
-      run: |
-        git config --local user.email "rashid.6689@gmail.com"  # Replace with your email
-        git config --local user.name "rashid-infi-cicd"  # Replace with your name
+    # - name: On fails Commit & Push screenshots, videos and reports
+    #   if: ${{ failure() }}
+    #   run: |
+    #     git config --local user.email "rashid.6689@gmail.com"  # Replace with your email
+    #     git config --local user.name "rashid-infi-cicd"  # Replace with your name
         
-        # Check if there are any screenshots to commit
-        if [ "$(ls -A cypress/screenshots)" ]; then
-          git add cypress/screenshots
-        else
-          echo "No screenshots to commit."
-        fi
+    #     # Check if there are any screenshots to commit
+    #     if [ "$(ls -A cypress/screenshots)" ]; then
+    #       git add cypress/screenshots
+    #     else
+    #       echo "No screenshots to commit."
+    #     fi
 
-        # Check if there are any videos to commit
-        if [ "$(ls -A cypress/videos)" ]; then
-          git add cypress/videos
-        else
-          echo "No videos to commit."
-        fi
+    #     # Check if there are any videos to commit
+    #     if [ "$(ls -A cypress/videos)" ]; then
+    #       git add cypress/videos
+    #     else
+    #       echo "No videos to commit."
+    #     fi
 
-        # Check if there are any reports to commit
-        if [ "$(ls -A cypress/reports)" ]; then
-          git add cypress/reports
-        else
-          echo "No reports to commit."
-        fi
+    #     # Check if there are any reports to commit
+    #     if [ "$(ls -A cypress/reports)" ]; then
+    #       git add cypress/reports
+    #     else
+    #       echo "No reports to commit."
+    #     fi
 
-        # Commit if there are any changes
-        if ! git diff --cached --quiet; then
-          git commit -m "Add Cypress artifacts from CI"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
-          else
-          echo "No changes to commit."
-        fi
+    #     # Commit if there are any changes
+    #     if ! git diff --cached --quiet; then
+    #       git commit -m "Add Cypress artifacts from CI"
+    #       git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+    #       else
+    #       echo "No changes to commit."
+    #     fi
         
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
     
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# name: CI
-
-# on: [push]
-
-# jobs:
-
-#   build:
-#     runs-on: ubuntu-latest
-    
-#     steps:
-#     - uses: actions/checkout@v4
-    
-#     - name: Run a failing command
-#       run: exit 1
       
-#     - name: Create issue on failure
-#       if: ${{ failure() }}
-#       uses: dacbd/create-issue-action@main
-#       with:
-#         token: ${{ secrets.GH_TOKEN }}
-#         title: Workflow failure in ${{ github.workflow }}
-#         body: |
-#           The workflow `${{ github.workflow }}` failed on commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
-          
-#            Job: ${{ job.job }}
-#            Step: ${{ steps.stepName.outcome }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# name: CI
-
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-22.04
-
-#     steps:
-#     - name: Checkout code
-#       uses: actions/checkout@v4
-
-#     # - name: Install dependencies
-#     #   run: npm install
-      
-
-#     - name: Cypress run
-#       # run: npx cypress run --headless
-#       uses: cypress-io/github-action@v6
-#       # continue-on-error: true  # Continue running even if the tests fail
-
-#     # - uses: actions/upload-artifact@v4
-#     #   if: failure()
-#     #   with:
-#     #       name: cypress-screenshots
-#     #       path: cypress/screenshots
-#     #       if-no-files-found: ignore
-
-#     - name: Create GitHub Issue on Test Failure
-#       if: failure()
-#       # if: always()
-#       uses: actions/github-script@v6
-#       with:
-#         script: |
-#           console.log('Running issue creation script...');
-#           if (core.getInput('conclusion') === 'failure') {
-#             const issues = await github.rest.issues.listForRepo({
-#               owner: context.repo.owner,
-#               repo: context.repo.repo,
-#               labels: "cypress-failure",
-#               state: "open"
-#             });
-#             console.log(`Found ${issues.data.length} open issues with 'cypress-failure' label.`);
-
-#             if (issues.data.length === 0) {
-#               console.log('No existing issue found, creating a new one...');
-#               await github.rest.issues.create({
-#                 owner: context.repo.owner,
-#                 repo: context.repo.repo,
-#                 title: `Cypress Test Failure in ${github.context.workflow}`,
-#                 body: `A test failed in the CI pipeline.\n\nCheck the latest [workflow run](${github.context.server_url}/${github.context.repo.owner}/${github.context.repo.repo}/actions/runs/${github.run_id}) for details.`,
-#                 labels: ["cypress-failure"],
-#               });
-#               console.log('Issue created successfully.');
-#             } else {
-#               console.log('Existing issue found, not creating a new one.');
-#             }
-#           } else {
-#             console.log('No test failures detected, skipping issue creation.');
-#           }
-#       env:
-#           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-#     - name: Upload Cypress Artifacts
-#       if: always()
-#       uses: actions/upload-artifact@v4
-#       with:
-#         name: cypress-videos
-#         path: cypress/videos
-
-#     - name: Upload Test Results
-#       if: always()
-#       uses: actions/upload-artifact@v4
-#       with:
-#         name: cypress-results
-#         path: cypress/results
-
