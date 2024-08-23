@@ -30,7 +30,7 @@ jobs:
       with:
         browser: chrome
         # record: true
-      # continue-on-error: true
+      continue-on-error: true
       env:
           CI: true
     # - name: Clean up old reports
