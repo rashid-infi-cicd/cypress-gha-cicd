@@ -33,11 +33,13 @@ jobs:
       continue-on-error: true
       env:
           CI: true
-    # - name: Clean up old reports
-    #   run: |
-    #         rm -rf cypress/reports/*.html
-    #         rm -rf cypress/videos/*
-    #         rm -rf cypress/screenshots/*
+
+
+    - name: Clean up old reports
+      run: |
+            rm -rf cypress/reports/*.html
+            rm -rf cypress/videos/*
+            rm -rf cypress/screenshots/*
 
 
 
@@ -55,7 +57,7 @@ jobs:
 
 
     - uses: actions/upload-artifact@v4
-      if: failure()
+      if: ${{ failure() }}
       with:
           name: cypress-screenshots
           path: cypress/screenshots
@@ -166,8 +168,8 @@ jobs:
 
 
 
-    - name: Commit & Push screenshots, videos and reports
-      if: failure()
+    - name: On fails Commit & Push screenshots, videos and reports
+      if: ${{ failure() }}
       run: |
         git config --local user.email "rashid.6689@gmail.com"  # Replace with your email
         git config --local user.name "rashid-infi-cicd"  # Replace with your name
