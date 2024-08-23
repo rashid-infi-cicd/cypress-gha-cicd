@@ -97,19 +97,12 @@ jobs:
         token: ${{ secrets.GH_TOKEN }}
         title: Test Failure in Run #${{ github.run_number }}
         body: |
-      
-          const releaseUrl = `https://github.com/${{ github.repository }}/releases/tag/cypress-artifacts-${{ github.run_number }}`;
-        
-          const issue = await github.issues.create({
-          owner: context.repo.owner,
-          repo: context.repo.repo,
-          title: `Test Failure in Run #${{ github.run_number }}`,
-          body: `The tests in this run have failed. You can find the screenshots, videos, and reports at the following link:\n\n[Artifacts](${releaseUrl})`
-          });
-
-          console.log(`Created issue: ${issue.data.html_url}`);
-    #  env:
-    #         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          The tests in this run have failed. You can find the artifacts at the following links:
+          [Videos](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-videos)
+          [Screenshots](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-screenshots)
+          [Mochawesome Report](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-report)
+      env:
+            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
 
 
