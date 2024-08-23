@@ -95,7 +95,7 @@ jobs:
       uses: actions/github-script@v6
       with:
        script: |
-         const { exec } = require('@actions/exec');
+      
          const releaseUrl = `https://github.com/${{ github.repository }}/releases/tag/cypress-artifacts-${{ github.run_number }}`;
         
           const issue = await github.issues.create({
