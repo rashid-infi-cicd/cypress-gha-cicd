@@ -116,7 +116,7 @@ jobs:
       run: |  
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add cypress/videos/ cypress/screenshots/ cypress/reports/
+          git add cypress/videos/ cypress/reports/
           git commit -m "Add Cypress artifacts from Passed tests"
           git push origin HEAD:main
       env:
