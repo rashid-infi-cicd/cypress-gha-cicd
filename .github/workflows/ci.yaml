@@ -103,6 +103,10 @@ jobs:
           #  <a href="https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html" download="mochawesome.html">download the report</a>.
           Check the <a href="https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html">report</a> for more details. 
 
+          <a href="https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html" download="mochawesome.html" onclick="setTimeout(() => { window.location.href='https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html'; }, 1000);">
+          Download and View the Report
+          </a>
+
 
     - name: Check permissions
       env:
