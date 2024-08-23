@@ -90,8 +90,6 @@ jobs:
           **Videos:** [Download Videos](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-videos)
           **Mochawesome Report:** [Download Report](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-report)
     
-
-
     - name: Push Cypress artifacts on failed
       if: ${{ failure() }}
       run: |  
