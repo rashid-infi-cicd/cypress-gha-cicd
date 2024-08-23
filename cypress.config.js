@@ -19,7 +19,7 @@ module.exports = defineConfig({
       reportDir: 'cypress/reports',
       overwrite: true,
       html: true,
-      json: true,
+      json: false,
       reportFilename: 'mochawesome',//'Feather mocha full report',
       screenshotOnRunFailure: true,
       charts: true,
@@ -31,5 +31,7 @@ module.exports = defineConfig({
     videoCompression: true,
     videoCompression: 15,
     screenshotOnRunFailure: true,
+    videosFolder: "cypress/videos",
+    screenshotsFolder: "cypress/screenshots",
   },
 });
