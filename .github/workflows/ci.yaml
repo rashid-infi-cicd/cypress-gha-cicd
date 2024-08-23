@@ -47,6 +47,7 @@ jobs:
       run: npm run mochaowesome:report
 
     - name: Upload Mochawesome report
+      if: always()
       uses: actions/upload-artifact@v4
       with:
           name: cypress-report
@@ -66,17 +67,10 @@ jobs:
       with:
         name: cypress-videos
         path: cypress/videos
-
-    # - name: Notify Teams on Success
-    #   if: success()  # This step only runs if the job is successful
-    #   env:
-    #          GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Reference your secret
-    #   run: |
-    #      curl -H 'Content-Type: application/json' -d '{
-    #         "text": "✅ Workflow succeeded! The latest build for the branch `main` passed successfully."
-    #      }' $GH-WEBHOOK-URL
+        if-no-files-found: ignore
 
 
+    
 
     - name: Create issue on failure
       if: ${{ failure() }}
@@ -92,22 +86,11 @@ jobs:
           **Branch:** ${{ github.ref }}  
           **Commit Message:** ${{ github.event.head_commit.message }}
 
-        #   labels: |
-        #   cypress-failure
-        #   automation
-        #   bug  # Add any additional labels you want here
-        #    ${{ steps.set_failed_tests.outputs.failed_tests }}
-        #   assignees: |
-        #   zartash-infini  # Replace with GitHub username
-        #   username2  # Add more usernames as needed
+          **Screenshots:** [Download Screenshots](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-screenshots)
+          **Videos:** [Download Videos](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-videos)
+          **Mochawesome Report:** [Download Report](https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/cypress-report)
+    
 
-
-    - name: Check permissions
-      env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      run: |
-        curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/collaborators
-        
 
     - name: Push Cypress artifacts on failed
       if: ${{ failure() }}
@@ -121,6 +104,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
 
+    - name: Check permissions
+      env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: |
+        curl -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/${{ github.repository }}/collaborators
+
+
+    
     - name: Push Cypress artifacts on Passed
       run: |  
           git config user.name "github-actions[bot]"
@@ -170,6 +161,11 @@ jobs:
         
       # env:
       #   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
+
+
+
+
+
 
     # - name: On fails Commit & Push screenshots, videos and reports
     #   if: ${{ failure() }}
