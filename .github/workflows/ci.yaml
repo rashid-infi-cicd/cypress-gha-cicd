@@ -123,41 +123,41 @@ jobs:
     
 
     # - name: Commit & Push screenshots, videos and reports
-      run: |
-        git config --local user.email "rashid.6689@gmail.com"  # Replace with your email
-        git config --local user.name "rashid-infi-cicd"  # Replace with your name
+      # run: |
+      #   git config --local user.email "rashid.6689@gmail.com"  # Replace with your email
+      #   git config --local user.name "rashid-infi-cicd"  # Replace with your name
         
-        # Check if there are any screenshots to commit
-        if [ "$(ls -A cypress/screenshots)" ]; then
-          git add cypress/screenshots
-        else
-          echo "No screenshots to commit."
-        fi
+      #   # Check if there are any screenshots to commit
+      #   if [ "$(ls -A cypress/screenshots)" ]; then
+      #     git add cypress/screenshots
+      #   else
+      #     echo "No screenshots to commit."
+      #   fi
 
-        # Check if there are any videos to commit
-        if [ "$(ls -A cypress/videos)" ]; then
-          git add cypress/videos
-        else
-          echo "No videos to commit."
-        fi
+      #   # Check if there are any videos to commit
+      #   if [ "$(ls -A cypress/videos)" ]; then
+      #     git add cypress/videos
+      #   else
+      #     echo "No videos to commit."
+      #   fi
 
-        # Check if there are any reports to commit
-        if [ "$(ls -A cypress/reports)" ]; then
-          git add cypress/reports
-        else
-          echo "No reports to commit."
-        fi
+      #   # Check if there are any reports to commit
+      #   if [ "$(ls -A cypress/reports)" ]; then
+      #     git add cypress/reports
+      #   else
+      #     echo "No reports to commit."
+      #   fi
 
-        # Commit if there are any changes
-        if ! git diff --cached --quiet; then
-          git commit -m "Add Cypress artifacts from CI"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
-          else
-          echo "No changes to commit."
-        fi
+      #   # Commit if there are any changes
+      #   if ! git diff --cached --quiet; then
+      #     git commit -m "Add Cypress artifacts from CI"
+      #     git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref_name }}
+      #     else
+      #     echo "No changes to commit."
+      #   fi
         
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
+      # env:
+      #   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Use the token for authentication
 
     # - name: On fails Commit & Push screenshots, videos and reports
     #   if: ${{ failure() }}
