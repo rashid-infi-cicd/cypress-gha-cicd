@@ -98,9 +98,10 @@ jobs:
           **Branch:** ${{ github.ref }}  
           **Commit Message:** ${{ github.event.head_commit.message }}
 
-           Check the <a href="https://github.com/rashid-infi-cicd/cypress-gha-cicd/blob/main/cypress/reports/mochawesome.html" target="_blank">report</a> for more details. 
-           Or 
-           <a href="https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html" download="mochawesome.html">download the report</a>.
+          #  Check the <a href="https://github.com/rashid-infi-cicd/cypress-gha-cicd/blob/main/cypress/reports/mochawesome.html" target="_blank">report</a> for more details. 
+          #  Or 
+          #  <a href="https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html" download="mochawesome.html">download the report</a>.
+          Check the <a href="https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html">report</a> for more details. 
 
 
     - name: Check permissions
