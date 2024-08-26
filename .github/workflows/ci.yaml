@@ -80,7 +80,6 @@ jobs:
           git push origin HEAD:main
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
     - name: Create issue on failure
       if: ${{ failure() }}
       uses: dacbd/create-issue-action@main
@@ -95,15 +94,17 @@ jobs:
           **Branch:** ${{ github.ref }}  
           **Commit Message:** ${{ github.event.head_commit.message }}
 
+          # <a href="https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html" download="mochawesome.html">
+          # Download and View Report
+          # </a>
+
+          **To view the test report:**
+          1. Click the link below to download the report.
+          2. Open the downloaded file in your browser.
+    
           [Download and View Report](https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html)
 
-
-
-
-
-
-
-          
+       
 
     - name: Check permissions
       env:
