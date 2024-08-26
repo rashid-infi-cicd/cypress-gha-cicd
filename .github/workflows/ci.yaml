@@ -81,9 +81,6 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-
-    
-
     - name: Create issue on failure
       if: ${{ failure() }}
       uses: dacbd/create-issue-action@main
@@ -98,40 +95,16 @@ jobs:
           **Branch:** ${{ github.ref }}  
           **Commit Message:** ${{ github.event.head_commit.message }}
 
-          #  Check the <a href="https://github.com/rashid-infi-cicd/cypress-gha-cicd/blob/main/cypress/reports/mochawesome.html" target="_blank">report</a> for more details. 
-          #  Or 
-          #  <a href="https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html" download="mochawesome.html">download the report</a>.
-          Check the <a href="https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html">report</a> for more details. 
+          [Download and View Report](https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html)
 
-          <a href="https://raw.githubusercontent.com/rashid-infi-cicd/cypress-gha-cicd/main/cypress/reports/mochawesome.html" download="mochawesome.html">
-          Download and View Report
-          </a>
 
-          <script>
-            document.querySelector('a').addEventListener('click', function(e) {
-            e.preventDefault();
-            const link = this;
-          const url = link.href;
-          const fileName = link.getAttribute('download');
 
-          // Create an invisible download link
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = fileName;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
 
-          // Open the file in a new tab after a short delay
-          setTimeout(function() {
-              window.open(url, '_blank');
-          }, 1000);
-          });
-          </script>
 
 
 
           
+
     - name: Check permissions
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
