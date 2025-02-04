@@ -1,7 +1,7 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
-   projectId: 'q5vq9a',
+  //  projectId: 'q5vq9a',
   e2e: {
     baseUrl: "https://example.cypress.io",
     specPattern: 'cypress/e2e/**/*.cy.js',
@@ -30,6 +30,10 @@ module.exports = defineConfig({
     video: true,
     videoCompression: true,
     videoCompression: 15,
+
+    // env: {
+    //   CYPRESS_RECORD_KEY: "62ad7c5d-2c01209cf1c7",
+    // }
   
   },
 });
