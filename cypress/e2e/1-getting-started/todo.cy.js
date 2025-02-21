@@ -29,8 +29,8 @@ describe('example to-do app', () => {
 
 
 
-    
-    cy.testim('hello').click(),
+
+    //cy.testim('hello').click(),
 
 
 
